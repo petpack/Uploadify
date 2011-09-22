@@ -1,4 +1,4 @@
-<div class="field UploadifyField backend">
+<div class="field UploadifyField backend $extraClass">
 	<div class="horizontal_tab_wrap">
 	  <div class="tabNavigation clearfix">
 		<label for="$id">$Title</label>

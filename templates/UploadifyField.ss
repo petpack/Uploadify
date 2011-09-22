@@ -1,4 +1,4 @@
-<div class="field UploadifyField">
+<div class="field UploadifyField $extraClass">
 	<label for="$id">$Title</label>
 	<div class="middleColumn">
 		<div class="button_wrapper">
