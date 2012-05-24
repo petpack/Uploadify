@@ -123,6 +123,12 @@ abstract class UploadifyField extends FormField
 	public $baseFileClass = "File";
 
 
+	protected $treeBaseID;
+
+	public function setTreeBaseID( $id ) {
+		$this->treeBaseID = $id;
+	}
+
 	/**
 	 * Sets a default setting of the class definition that will apply to all
 	 * instances, unless overridden by {@see setVar} in an individual instance
@@ -468,7 +474,7 @@ abstract class UploadifyField extends FormField
 			$id = $this->CurrentUploadFolder()->ID;
 		}
 		$group = new FieldGroup(
-			$d = new SimpleTreeDropdownField("UploadFolderID_{$this->id()}", '', "Folder", $id, "Filename"),
+			$d = new SimpleTreeDropdownField("UploadFolderID_{$this->id()}", '', "Folder", $id, "Filename", null, null, $this->treeBaseID),
 			new LiteralField("slash{$this->id()}"," / "),
 			new TextField("NewFolder_{$this->id()}", ""),
 			$a = new FormAction("ok_{$this->id()}", _t('Uploadify.CHANGEFOLDERACTION','Change'))
@@ -486,7 +492,7 @@ abstract class UploadifyField extends FormField
 	 * @return DropdownField
 	 */
 	public function ImportDropdown() {
-		$d = new SimpleTreeDropdownField("ImportFolderID_{$this->id()}", _t('Uploadify.CHOOSEIMPORTFOLDER','Choose a folder'), "Folder", null, "Filename");
+		$d = new SimpleTreeDropdownField("ImportFolderID_{$this->id()}", _t('Uploadify.CHOOSEIMPORTFOLDER','Choose a folder'), "Folder", null, "Filename", null, null, $this->treeBaseID);
 		$d->setEmptyString('-- ' . _t('Uploadify.PLEASESELECT','Select a folder') . ' --');
 		$d->addExtraClass("{'url' : '".$this->Link('importlist')."' }");
 		return $d;
