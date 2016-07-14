@@ -39,7 +39,7 @@ class S3UploadField extends FileUploadField {
 	
 
 	/**
-	 * @var boolean The user should never be allowed to select folders for S3 files
+	 * @var SS_Boolean The user should never be allowed to select folders for S3 files
 	 */
 	protected $allowFolderSelection = false;
 	
@@ -67,7 +67,7 @@ class S3UploadField extends FileUploadField {
 	/**
 	 * Handles uploading to the S3 server
 	 *
-	 * @return int
+	 * @return SS_Int
 	 */
 	public function uploads3() {
 		if (isset($_FILES["Filedata"]) && is_uploaded_file($_FILES["Filedata"]["tmp_name"])) {

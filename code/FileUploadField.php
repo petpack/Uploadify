@@ -138,7 +138,8 @@ class FileUploadField extends UploadifyField
 	 *
 	 * @param DataObject $record The record associated with the parent form
 	 */
-	public function saveInto(DataObject $record) {
+	public function saveInto(DataObjectInterface $record) {
+		// @fixme: is this right?
 		if(isset($_REQUEST[$this->name."ID"])) {
 			$file_id = (int) $_REQUEST[$this->name."ID"];
 			if($file_class = $record->has_one($this->name)) {

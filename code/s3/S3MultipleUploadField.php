@@ -42,7 +42,7 @@ class S3MultipleUploadField extends MultipleFileUploadField {
 	
 	
 	/**
-	 * @var boolean The user should never be allowed to select folders for S3 files
+	 * @var SS_Boolean The user should never be allowed to select folders for S3 files
 	 */
 	public $allowFolderSelection = false;
 	
@@ -70,7 +70,7 @@ class S3MultipleUploadField extends MultipleFileUploadField {
 	/**
 	 * Handles uploading to the S3 server
 	 *
-	 * @return int
+	 * @return SS_Int
 	 */	
 	public function uploads3() {
 		if (isset($_FILES["Filedata"]) && is_uploaded_file($_FILES["Filedata"]["tmp_name"])) {

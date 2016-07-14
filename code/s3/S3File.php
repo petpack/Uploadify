@@ -41,7 +41,7 @@ class S3File extends DataObject {
 	
 	
 	/**
-	 * @var boolean If true, append a unique id to the filenames
+	 * @var SS_Boolean If true, append a unique id to the filenames
 	 */	
 	public static $unique_id = true;
 
@@ -99,7 +99,7 @@ class S3File extends DataObject {
 	 * Constructor for the S3File object. Assigns a member S3 object.
 	 *
 	 * @param array $record The database record associated with this object
-	 * @param boolean $isSingleton Set true if this object was instantiated as a singleton
+	 * @param SS_Boolean $isSingleton Set true if this object was instantiated as a singleton
 	 */
 	public function __construct($record = null, $isSingleton = false) {
 		parent::__construct($record, $isSingleton);
@@ -136,7 +136,7 @@ class S3File extends DataObject {
 	 * and send it off to S3
 	 *
 	 * @param array $filedata The file data from the request
-	 * @return boolean
+	 * @return SS_Boolean
 	 */
 	public function loadUploaded($filedata) {
 		if(!is_array($filedata) || !isset($filedata['tmp_name'])) 

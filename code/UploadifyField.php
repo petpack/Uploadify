@@ -52,13 +52,13 @@ abstract class UploadifyField extends FormField
 	
 
 	/**
- 	 * @var boolean Stores whether the formfield is used in the backend
+ 	 * @var SS_Boolean Stores whether the formfield is used in the backend
  	 */
 	protected static $backend = false;	
 	
 	
 	/**
-	 * @var boolean Puts Uploadify in debug mode to show all of the parameters on the template
+	 * @var SS_Boolean Puts Uploadify in debug mode to show all of the parameters on the template
 	 */
 	protected static $debug = false;
 
@@ -88,13 +88,13 @@ abstract class UploadifyField extends FormField
 	
 
 	/**
-	 * @var boolean Allow the selection of the file destination (CMS only)
+	 * @var SS_Boolean Allow the selection of the file destination (CMS only)
 	 */
 	protected $allowFolderSelection = true;
 	
 
 	/**
-	 * @var boolean Allow the user to choose an existing file
+	 * @var SS_Boolean Allow the user to choose an existing file
 	 */
 	public $allowImport = true;
 	
@@ -152,7 +152,7 @@ abstract class UploadifyField extends FormField
 	/**
 	 * Convert a shorthand byte value from a PHP configuration directive to an integer value
 	 * @param string $value
-	 * @return int
+	 * @return SS_Int
 	 */
 	public static function convert_bytes($value) {
 	    if ( is_numeric( $value ) ) {
@@ -288,7 +288,7 @@ abstract class UploadifyField extends FormField
 	 * Note: This handler may require authentication, and that may not be possible
 	 * if the PHP setting "session_use_only_cookies" is on.
 	 *
-	 * @return int
+	 * @return SS_Int
 	 */
 	public function upload() {
 		if(isset($_FILES["Filedata"]) && is_uploaded_file($_FILES["Filedata"]["tmp_name"])) {
@@ -381,7 +381,7 @@ abstract class UploadifyField extends FormField
 	/**
 	 * Determines whether a user can see the folder selection interface
 	 *
-	 * @return boolean
+	 * @return SS_Boolean
 	 */
 	public function CanSelectFolder() {
 		return $this->allowFolderSelection;
@@ -466,7 +466,7 @@ abstract class UploadifyField extends FormField
 	/**
 	 * Returns the folder selection dropdown to the template
 	 *
-	 * @param int $id The ID of the folder that is selected
+	 * @param SS_Int $id The ID of the folder that is selected
 	 * @return DropdownField
 	 */
 	public function FolderDropdown($id = null) {
@@ -502,7 +502,7 @@ abstract class UploadifyField extends FormField
 	/**
 	 * A quick template accessor to determine if this uploader allows multiple files
 	 *
-	 * @return boolean
+	 * @return SS_Boolean
 	 */
 	public function Multi() {
 		return $this->getSetting('multi');
@@ -511,7 +511,7 @@ abstract class UploadifyField extends FormField
 	/**
 	 * A quick template accessor to determine if delete link is enabled
 	 *
-	 * @return boolean
+	 * @return SS_Boolean
 	 */
 	public function DeleteEnabled() {
 		return $this->allowDelete;
@@ -573,7 +573,7 @@ abstract class UploadifyField extends FormField
 	/**
 	 * Template accessor to determine if debug is enabled.
 	 *
-	 * @return boolean
+	 * @return SS_Boolean
 	 */
 	public function DebugMode() {
 		return self::$debug;

@@ -71,7 +71,7 @@ class S3 {
 	/**
 	* Get a list of buckets
 	*
-	* @param boolean $detailed Returns detailed bucket list when true
+	* @param SS_Boolean $detailed Returns detailed bucket list when true
 	* @return array | false
 	*/
 	public static function listBuckets($detailed = false) {
@@ -175,7 +175,7 @@ class S3 {
 	*
 	* @param string $bucket Bucket name
 	* @param constant $acl ACL flag
-	* @return boolean
+	* @return SS_Boolean
 	*/
 	public function putBucket($bucket, $acl = self::ACL_PRIVATE) {
 		$rest = new S3Request('PUT', $bucket, '');
@@ -196,7 +196,7 @@ class S3 {
 	* Delete an empty bucket
 	*
 	* @param string $bucket Bucket name
-	* @return boolean
+	* @return SS_Boolean
 	*/
 	public function deleteBucket($bucket = '') {
 		$rest = new S3Request('DELETE', $bucket);
@@ -258,7 +258,7 @@ class S3 {
 	* @param constant $acl ACL constant
 	* @param array $metaHeaders Array of x-amz-meta-* headers
 	* @param string $contentType Content type
-	* @return boolean
+	* @return SS_Boolean
 	*/
 	public static function putObject($input, $bucket, $uri, $acl = self::ACL_PRIVATE, $metaHeaders = array(), $contentType = null) {
 		if ($input == false) return false;
@@ -325,7 +325,7 @@ class S3 {
 	* @param constant $acl ACL constant
 	* @param array $metaHeaders Array of x-amz-meta-* headers
 	* @param string $contentType Content type
-	* @return boolean
+	* @return SS_Boolean
 	*/
 	public static function putObjectFile($file, $bucket, $uri, $acl = self::ACL_PRIVATE, $metaHeaders = array(), $contentType = null) {
 		return self::putObject(S3::inputFile($file), $bucket, $uri, $acl, $metaHeaders, $contentType);
@@ -341,7 +341,7 @@ class S3 {
 	* @param constant $acl ACL constant
 	* @param array $metaHeaders Array of x-amz-meta-* headers
 	* @param string $contentType Content type
-	* @return boolean
+	* @return SS_Boolean
 	*/
 	public function putObjectString($string, $bucket, $uri, $acl = self::ACL_PRIVATE, $metaHeaders = array(), $contentType = 'text/plain') {
 		return self::putObject($string, $bucket, $uri, $acl, $metaHeaders, $contentType);
@@ -384,7 +384,7 @@ class S3 {
 	*
 	* @param string $bucket Bucket name
 	* @param string $uri Object URI
-	* @param boolean $returnInfo Return response information
+	* @param SS_Boolean $returnInfo Return response information
 	* @return mixed | false
 	*/
 	public static function getObjectInfo($bucket = '', $uri = '', $returnInfo = true) {
@@ -407,7 +407,7 @@ class S3 {
 	* @param string $bucket Bucket name
 	* @param string $targetBucket Target bucket (where logs are stored)
 	* @param string $targetPrefix Log prefix (e,g; domain.com-)
-	* @return boolean
+	* @return SS_Boolean
 	*/
 	public static function setBucketLogging($bucket, $targetBucket, $targetPrefix) {
 		$dom = new DOMDocument;
@@ -475,7 +475,7 @@ class S3 {
 	* @param string $bucket Bucket name
 	* @param string $uri Object URI
 	* @param array $acp Access Control Policy Data (same as the data returned from getAccessControlPolicy)
-	* @return boolean
+	* @return SS_Boolean
 	*/
 	public static function setAccessControlPolicy($bucket, $uri = '', $acp = array()) {
 		$dom = new DOMDocument;

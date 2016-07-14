@@ -184,7 +184,7 @@ class MultipleFileUploadField extends UploadifyField
 	/**
 	 * Template accessor to determine if sorting is enabled
 	 *
-	 * @return boolean
+	 * @return SS_Boolean
 	 */
 	public function Sortable() {
 		if(!self::$backend) return false;
@@ -226,7 +226,7 @@ class MultipleFileUploadField extends UploadifyField
 	 * Returns file class for the $record for field $this->name if has_many or many_many
 	 * 
 	 * @param 	DataObject $record 	The record to search
-	 * @return 	string|boolean		File class or false
+	 * @return 	string|SS_Boolean		File class or false
 	 */
 	public function getFileClass (DataObject $record) {
 		if(!$file_class = $record->has_many($this->name)) {
