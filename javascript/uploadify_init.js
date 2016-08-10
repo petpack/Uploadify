@@ -206,7 +206,44 @@ $(function() {
 					if($('input', $(this)).length) {
 						$t.parents('.import_dropdown').find('button').show();
 					}
-					$(this).slideDown();		
+					
+					//show a nice preview of the image when hovering over the thumbnail:
+					$(this).find('ul li label img').hover(function(e) {	//in
+						url = $(this).parent().find('span.imagefile').attr('data-url');
+						if (url) {
+							pos = $target.position()
+							preview = $("<div id='image-preview'><h3>Preview:</h3><img class='preview' src='" + url + "' /></div>").css({
+								position: 'absolute',
+								top: pos.top + 'px',
+								left: ($(this).position().left + 40) + 'px',
+								'max-width': '40%',
+								border: '3px outset #777',
+								background: '#fff',
+								padding: '10px',
+								'border-radius': '7px',
+								'z-index': 999999
+							});
+							
+							preview.find('h3').css({
+								background: 'none',
+								border: 'none',
+								margin: '0px',
+								padding: '0px'
+							})
+							
+							preview.find('img').css({
+								'max-width': '100%',
+								'max-height': ($('div#right').height() - $target.offset().top - 50)
+							});
+							
+							preview.appendTo($target.parent());
+						}
+						
+					}, function(e) {	//out
+						$target.parent().find('div#image-preview').remove();
+					})
+					
+					$(this).slideDown();
 				});	
 			}
 		});

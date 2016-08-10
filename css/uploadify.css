@@ -101,3 +101,45 @@ div.tabNavigation ul.navigation li a.selected { background:#e9e9e9; color:#777; 
 
 .folder_select_wrap {margin-top:8px;}
 .folder_select_wrap h5 {color:#666;font-weight:normal;border-top:1px solid #c5c5c5;padding-top:4px;margin:0;}
+
+
+
+/* DM: hacks to make things look less horrible: */
+
+form div.fieldgroup div.simpletreedropdown select {
+	width: 50%;
+}
+
+div.import_dropdown select {
+	width: 100%;
+}
+
+div.UploadifyField div.folder_select div.fieldgroupField input.text,
+div.UploadifyField div.folder_select div.fieldgroupField.formaction button.action {
+	display: inline;
+}
+
+div.import_list ul li * {
+	display: block;
+	float: left;
+	height: 32px;
+	line-height: 32px;
+	margin-right: 4px;
+}
+
+div.import_list ul li label {
+	margin-right: 0px;
+	width: calc(100% - 25px);
+	overflow: hidden;
+}
+
+div.import_list ul li label span.filename {
+	max-width: calc(100% - 50px);
+	white-space: nowrap;
+}
+
+div.import_list ul {
+	padding: 0px;
+}
+
+
