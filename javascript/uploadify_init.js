@@ -236,6 +236,11 @@ $(function() {
 								'max-height': ($('div#right').height() - $target.offset().top - 50)
 							});
 							
+							//this is a hack. we're absolute positioning the preview 
+							//	relative to the target's parent. For this to work, 
+							//	it has to have relative positioning. 
+							$target.parent().css({position: 'relative'}); 
+							
 							preview.appendTo($target.parent());
 						}
 						
