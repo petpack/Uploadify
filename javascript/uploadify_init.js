@@ -128,6 +128,17 @@ $(function() {
 		          tabContainers.filter(this.hash).show();
 		          $(this).parents('ul:first').find('.selected').removeClass('selected');
 		          $(this).addClass('selected');
+		          
+					//simulate the change event on the folder dropdown if the 'import' tab was
+					//	selected and it has nothing loaded
+					var dropdown = $(this).parents('div.UploadifyField').find('.import_dropdown');
+					if (	this.hash.indexOf('import') >= 0 && 
+							dropdown.find('.import_list').html() == ""
+					) {
+						dropdown.find('select').change();
+					}
+					
+		          
 		          return false;
 		      });
 		      
@@ -200,6 +211,7 @@ $(function() {
 			url : $t.metadata().url,
 			data : { FolderID : $t.val() },
 			success : function(data) {
+				
 				$target.slideUp(function() {
 					$(this).removeClass('loading').css({'height' : 'auto', 'max-height' : '150px','overflow' : 'auto'});
 					$(this).html(data);
@@ -246,7 +258,7 @@ $(function() {
 						
 					}, function(e) {	//out
 						$target.parent().find('div#image-preview').remove();
-					})
+					});
 					
 					$(this).slideDown();
 				});	
