@@ -30,7 +30,7 @@ if(jQuery)(
 				jQuery(this).each(function(){
 					var settings = jQuery.extend({
 					id              : jQuery(this).attr('id'), // The ID of the object being Uploadified
-					uploader        : 'uploadify.swf', // The path to the uploadify swf file
+					uploader        : null, // The path to the uploadify swf file (DM: should be null, flash removed)
 					script          : 'uploadify.php', // The path to the uploadify backend upload script
 					expressInstall  : null, // The path to the express install swf file
 					folder          : '', // The path to the upload folder
@@ -94,11 +94,48 @@ if(jQuery)(
 				if (settings.fileDataName) data.fileDataName = settings.fileDataName;
 				if (settings.queueID)      data.queueID      = settings.queueID;
 				if (settings.onInit() !== false) {
-					jQuery(this).css('display','none');
+					//jQuery(this).css('display','none');
 					jQuery(this).after('<div id="' + jQuery(this).attr('id') + 'Uploader"></div>');
-					swfobject.embedSWF(settings.uploader, settings.id + 'Uploader', settings.width, settings.height, '9.0.24', settings.expressInstall, data, {'quality':'high','wmode':settings.wmode,'allowScriptAccess':settings.scriptAccess},{},function(event) {
-						if (typeof(settings.onSWFReady) == 'function' && event.success) settings.onSWFReady();
+					
+					
+					jQuery.ajaxUpload.url=unescape(settings.script);
+					
+					jQuery(this).change(function(evt) {
+						
+						//DM: this is the new, alternate code for doing the upload via AJAX in the background
+						//	rather than using flash. It may not be totally compatible with what Uploadify used to do,
+						//	it certainly doesn't call all events (notably onSelect) or handle all features (notably queues)
+						//	but I *think* it should cover all our use cases
+						
+						//if there's a list of allowed file extensions, ensure the file matches
+						if ('fileExt' in settings) {
+							ok=false;
+							filename = this.files[0].name;
+							//limit to certain file types
+							exts = settings.fileExt.split(";");
+							exts.each(function(ext) {
+								e = ".*" + ext.replace("*.",'\.') + "$"	// wildcard (*.xxx) to regex (.*\.xxx$)
+								if (filename.match(e)) {
+									ok=true;
+									return false;
+								}
+							});
+							if (!ok) {
+								//nope
+								alert("ERROR: File '" + filename + "' is not the correct type! You can only upload " + settings.fileDesc + ".");
+								//do nothing
+								return false;
+							}
+						}
+						
+						//do the upload
+						jQuery.ajaxUpload.doUpload(this,evt,function(evt,id) {
+							//call the onComplete function 
+							//	(args: event, ID, fileObj, response, data). only event and data are used
+							settings.onComplete(evt,null,null,id);
+						})
 					});
+					
 					if (settings.queueID == false) {
 						jQuery("#" + jQuery(this).attr('id') + "Uploader").after('<div id="' + jQuery(this).attr('id') + 'Queue" class="uploadifyQueue"></div>');
 					} else {
@@ -109,6 +146,7 @@ if(jQuery)(
 					jQuery(this).bind("uploadifyOpen", settings.onOpen);
 				}
 				jQuery(this).bind("uploadifySelect", {'action': settings.onSelect, 'queueID': settings.queueID}, function(event, ID, fileObj) {
+					
 					if (event.data.action(event, ID, fileObj) !== false) {
 						var byteSize = Math.round(fileObj.size / 1024 * 100) * .01;
 						var suffix = 'KB';
@@ -294,3 +332,112 @@ if(jQuery)(
 		}
 	})
 })(jQuery);
+
+
+/**
+ * AjaxUpload. Copied from BugTracker.js and modified. 
+ * @TODO: Ideally we'd abstract and reuse the code rather than duplicating it.
+ * Note that uploadify never calls the fileSelected function
+ */
+jQuery.ajaxUpload = {
+	maxFileSize: 5242880, //bytes: 5MB
+	
+	url: '',	//populate this with the URL to post to
+	
+	//convert bytes to a hunam-readable size:
+	bytesToSize: function(bytes) {
+		var sizes = ['Bytes', 'KB', 'MB'];
+		if (bytes == 0) return 'n/a';
+		var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+		return (bytes / Math.pow(1024, i)).toFixed(1) + ' ' + sizes[i];
+	},
+	
+	fileSelected: function(ele) {
+		file = ele.files[0];
+		
+		info = jQuery(ele).parents('div.button_wrapper').find('div.fileinfo');
+		if (info.length) info.empty();
+		
+		// filter for image files
+		var rx = /^image\/(bmp|gif|jpeg|png|tiff)$/i;
+		if (! rx.test(file.type)) {
+			alert("This is not a supported image file!");
+			jQuery(ele).val(null);
+			return false;
+		}
+		
+		if (file.size > this.maxFileSize) {
+			alert("This file is too big (5MB limit), please resize it.\n\nAlternatively, you can try saving as a JPG\nand/or increasing JPEG Compression (reducing quality).\n\nNote that text in screenshots should be readable.");
+			jQuery(ele).val(null);
+			return false;
+		}
+		
+		if (info.length) {
+			reader = new FileReader();
+			reader.onload = function(e) {
+				info.append('<img src="' + e.target.result + '" style="max-height:250px;max-width:100%" />' +
+					'<br /><em>(' + jQuery.ajaxUpload.bytesToSize(file.size) + ')</em>' 
+				);
+			};
+			reader.readAsDataURL(file);
+		}
+		
+		
+	},
+	
+	/* Examines a string and returns true or false depending on whether it looks like a URL
+	 * 	(starts with https?://)
+	 */
+	isURL: function(url) {
+		var re = /^https?:\/\//;
+		return re.exec(url);
+	},
+	
+	doUpload: function(ele,evt,oncomplete) {
+		file = ele.files[0];
+		
+		url = jQuery.ajaxUpload.url;
+		
+		//find folder ID and add it to the URL (querystring)
+		folderSelect = jQuery(ele).parents('div.upload').find('div.folder_select select')
+		folderid = folderSelect.val();
+		if (folderid)
+			url = url + "?FolderID=" + folderid
+		
+		
+		reader= new FileReader();
+		
+		reader.onload = function(e) {
+			
+			imgdata = window.btoa(e.target.result);
+			
+			data = {
+				filename: file.name,
+				data: imgdata
+			};
+			statusmsg = jQuery('<div class="status"><em>Uploading...</em></div>');
+			statusmsg.insertAfter(ele);
+			
+			jQuery.ajax({
+				url: url,
+				type: 'POST',
+				//processData: false,
+				data: data,
+				complete: function(xhr,status) {
+					if (status == "success") {
+						id = xhr.responseText;
+						statusmsg.remove();
+						if (oncomplete)
+							oncomplete(evt,id);
+					} else {
+						statusmsg.text("An Error Occurred.");
+						window.setTimeout(function() {
+							statusmsg.remove();
+						},3000);
+					}
+				}
+			});
+		};
+		reader.readAsBinaryString(file);
+	}
+}

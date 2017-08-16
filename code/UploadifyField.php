@@ -290,27 +290,44 @@ abstract class UploadifyField extends FormField
 	 *
 	 * @return int
 	 */
-	public function upload() {
-		if(isset($_FILES["Filedata"]) && is_uploaded_file($_FILES["Filedata"]["tmp_name"])) {
-			$upload_folder = $this->getUploadFolder();
-			if($this->Backend()) {
-				if(isset($_REQUEST['FolderID'])) {
-					if($folder = DataObject::get_by_id("Folder", Convert::raw2sql($_REQUEST['FolderID']))) {
-						$upload_folder = self::relative_asset_dir($folder->Filename);
-					}
+	public function upload(SS_HTTPRequest $request) {
+		$filename = $request->postVar("filename");
+		$data = base64_decode($request->postVar("data"));
+		
+		if (!$filename || !$data) return "";
+		
+		//create temp file:
+		$tmp = tempnam("/tmp", "Uploadify-");
+		$fp = fopen($tmp,'w'); //Prepends timestamp to prevent overwriting
+		fwrite($fp, $data);
+		fclose($fp);
+		
+		$filearr = Array(
+			'tmp_name' => $tmp,
+			'name' => $filename,
+			'size' => strlen($data),
+		);
+		
+	
+		$upload_folder = $this->getUploadFolder();
+		if($this->Backend()) {
+			if(isset($_REQUEST['FolderID'])) {
+				if($folder = DataObject::get_by_id("Folder", Convert::raw2sql($_REQUEST['FolderID']))) {
+					$upload_folder = self::relative_asset_dir($folder->Filename);
 				}
 			}
-			$ext = strtolower(end(explode('.', $_FILES['Filedata']['name'])));
-			$class = in_array($ext, self::$image_extensions) ? $this->getSetting('image_class') : $this->getSetting('file_class');
-			$file = new $class();
-			$u = new Upload();
-			$u->loadIntoFile($_FILES['Filedata'], $file, $upload_folder);
-			$file->write();
-			echo $file->ID;
-		} 
-		else {
-			echo ' '; // return something or SWFUpload won't fire uploadSuccess
 		}
+		$ext = strtolower(end(explode('.', $filename)));
+		$class = in_array($ext, self::$image_extensions) ? $this->getSetting('image_class') : $this->getSetting('file_class');
+		$file = new $class();
+		$u = new Upload();
+		$u->setValidator(null);	//disables validation
+		$u->loadIntoFile($filearr, $file, $upload_folder);
+		$file->write();
+		echo $file->ID;
+		
+		//remove temp file.
+		unlink($tmp);
 	}
 	
 	
@@ -425,8 +442,7 @@ abstract class UploadifyField extends FormField
 	 */
 	public function FieldHolder() {
 		Requirements::javascript(THIRDPARTY_DIR."/jquery/jquery.js");
-		Requirements::javascript("uploadify/javascript/swfobject.js");
-		Requirements::javascript("uploadify/javascript/uploadify.js");
+		Requirements::javascript("uploadify/javascript/uploadify.src.js");
 		Requirements::javascript(THIRDPARTY_DIR."/jquery-metadata/jquery.metadata.js");
 		Requirements::javascript(THIRDPARTY_DIR."/jquery-livequery/jquery.livequery.js");
 		Requirements::javascript("uploadify/javascript/uploadify_init.js");
@@ -452,9 +468,9 @@ abstract class UploadifyField extends FormField
 				$this->setVar('refreshlink', Director::baseURL().Director::makeRelative($this->Link('refresh')));
 			}
 		}
-		if(!$this->getSetting('uploader')) {
-			$this->setVar('uploader',Director::baseURL().'uploadify/javascript/uploadify.swf');
-		}
+		//if(!$this->getSetting('uploader')) {
+		//	$this->setVar('uploader',Director::baseURL().'uploadify/javascript/uploadify.swf');
+		//}
 		if(!$this->getSetting('cancelImg')) {
 			$this->setVar('cancelImg',Director::baseURL().'uploadify/images/cancel.png');
 		}
@@ -612,6 +628,7 @@ abstract class UploadifyField extends FormField
 	 */
 	public function imagesOnly() {
 		$this->setFileTypes(self::$image_extensions, _t('Uploadify.IMAGES','Images'));
+		$this->setVar("accept", "image/*");
 	}
 	
 	

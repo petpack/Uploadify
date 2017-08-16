@@ -106,7 +106,7 @@ $(function() {
 				});
 			}
 			$uploader.uploadify(opts);
-
+			
 			// Build the "fake" CSS button
 			var $buttonWrapper = $('.button_wrapper', $t);
 			var $fakeButton = $(".button_wrapper a",$t);

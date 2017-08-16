@@ -2,11 +2,11 @@
 	<label for="$id">$Title</label>
 	<div class="middleColumn">
 		<div class="button_wrapper">
-			<a class="uploadify_button upload">$ButtonText</a>
-			<div class="object_wrapper">
-				<input type="file" class="uploadify { $Metadata }" name="$Name" id="$id" />
-				<input type="hidden" id="folder_hidden_{$id}" name="FolderID" value="$CurrentUploadFolder.ID" />
-			</div>
+			<!--  <a class="uploadify_button upload">$ButtonText</a> -->
+			<label>Click 'Browse' or drag a file here to upload.
+			<input type="file" class="uploadify { $Metadata }" name="$Name" id="$id" />
+			</label>
+			<input type="hidden" id="folder_hidden_{$id}" name="FolderID" value="$CurrentUploadFolder.ID" />
 		</div>
 		<div id="upload_preview_{$id}" class="preview">
 			<% include AttachedFiles %>

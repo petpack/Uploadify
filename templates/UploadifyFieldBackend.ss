@@ -11,10 +11,10 @@
 	      <div id="upload-$id" class="horizontal_tab upload">
 			<div class="middleColumn">
 				<div class="button_wrapper">
-					<a class="uploadify_button upload">$ButtonText</a>
-					<div class="object_wrapper">
-						<input type="file" class="uploadify { $Metadata }" name="$Name" id="$id" />
-					</div>
+					<!--  <a class="uploadify_button upload">$ButtonText</a> -->
+					<label>Click 'Browse' or drag a file here to upload.
+						<input type="file" class="uploadify { $Metadata }" name="$Name" id="{$id}" />
+					</label>
 				</div>
 				<% if CanSelectFolder %>
 					<div class="folder_select_wrap" id="folder_select_wrap_{$id}">

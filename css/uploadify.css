@@ -57,7 +57,28 @@ THE SOFTWARE.
 .UploadifyField .button_wrapper { position:relative;min-height:20px; }
 
 /* fake button */
-.UploadifyField .button_wrapper a {position:absolute; top:0; left:0; z-index:0; display:block; float:left; padding:4px 6px; background:#666; color:#fff; text-decoration:none; font-size:12px;-moz-border-radius:5px; }
+.UploadifyField .button_wrapper a {
+	position:absolute; 
+	top:0; 
+	left:0; 
+	z-index:0; 
+	display:block; 
+	float:left; 
+	padding:4px 6px; 
+	background:#666; 
+	color:#fff; 
+	text-decoration:none; 
+	font-size:12px;
+	border-radius:5px;
+	cursor:pointer; 
+}
+
+.UploadifyField .button_wrapper input {
+	border: 1px dashed #aaa;
+	background: #eee;
+	border-radius: 5px;
+	width: 100%;
+}
 
 /* pass hover effects to button */
 .UploadifyField .button_wrapper:hover a {background:#777; color:white;}
