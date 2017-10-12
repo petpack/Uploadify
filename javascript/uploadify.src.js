@@ -367,7 +367,7 @@ jQuery.ajaxUpload = {
 		}
 		
 		if (file.size > this.maxFileSize) {
-			alert("This file is too big (5MB limit), please resize it.\n\nAlternatively, you can try saving as a JPG\nand/or increasing JPEG Compression (reducing quality).\n\nNote that text in screenshots should be readable.");
+			alert("This file is too big (5MB limit), please resize it.\n\nAlternatively, you can try saving as a JPG\nand/or increasing JPEG Compression (reducing quality).");
 			jQuery(ele).val(null);
 			return false;
 		}
@@ -396,6 +396,12 @@ jQuery.ajaxUpload = {
 	doUpload: function(ele,evt,oncomplete) {
 		file = ele.files[0];
 		
+		if (file.size > 5242880) {	//5mb file limit
+			alert("This file is too large to upload. Please reduce the size and try again.");
+			ele.value="";
+			return false;
+		}
+		
 		url = jQuery.ajaxUpload.url;
 		
 		//find folder ID and add it to the URL (querystring)
@@ -415,10 +421,27 @@ jQuery.ajaxUpload = {
 				filename: file.name,
 				data: imgdata
 			};
-			statusmsg = jQuery('<div class="status"><em>Uploading...</em></div>');
+			
+			statusmsg = jQuery('<div class="status" style="margin-top: 0.5em;">Working...<br /><progress id="progressbar" value="0" max="1" style="width:75%;margin-right: 5px;"></progress><span class="pcnt"></span></div>');
 			statusmsg.insertAfter(ele);
 			
+			progressbar = statusmsg.find('#progressbar')[0];
+			pcnt = statusmsg.find('span.pcnt');
+			
 			jQuery.ajax({
+				xhr: function () {
+					var xhr = new window.XMLHttpRequest();
+					//upload progress
+					xhr.upload.addEventListener("progress", function (evt) {
+						if (evt.lengthComputable) {
+							var percentComplete = evt.loaded / evt.total;
+							pcnt.html(Math.round(percentComplete * 100) + "%");
+							progressbar.max = evt.total;
+							progressbar.value = evt.loaded;
+						}
+					}, false);
+					return xhr;
+				},
 				url: url,
 				type: 'POST',
 				//processData: false,

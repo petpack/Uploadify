@@ -12,7 +12,7 @@
 			<div class="middleColumn">
 				<div class="button_wrapper">
 					<!--  <a class="uploadify_button upload">$ButtonText</a> -->
-					<label>Click 'Browse' or drag a file here to upload.
+					<label>Choose a file by browsing your computer or drag a file here to upload
 						<input type="file" class="uploadify { $Metadata }" name="$Name" id="{$id}" />
 					</label>
 				</div>
