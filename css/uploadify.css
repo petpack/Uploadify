@@ -80,6 +80,11 @@ THE SOFTWARE.
 	width: 100%;
 }
 
+.UploadifyField .button_wrapper input.dragging {
+	border: 1px dashed #000;
+	background: #cfc;
+}
+
 /* pass hover effects to button */
 .UploadifyField .button_wrapper:hover a {background:#777; color:white;}
 

@@ -136,6 +136,18 @@ if(jQuery)(
 						})
 					});
 					
+					jQuery(this).bind('dragover',function() {
+						ele=jQuery(this);
+						if (!ele.hasClass('dragging')) {
+							ele.addClass('dragging');
+							ele.bind('dragend dragexit dragleave drop',function() {
+								ele.removeClass('dragging');
+								ele.unbind('dragend dragexit dragleave drop');
+							});
+						}
+					});
+					
+					
 					if (settings.queueID == false) {
 						jQuery("#" + jQuery(this).attr('id') + "Uploader").after('<div id="' + jQuery(this).attr('id') + 'Queue" class="uploadifyQueue"></div>');
 					} else {
